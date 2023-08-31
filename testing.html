@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App Firebase</title>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+    
+    <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app-compat.js"></script>
+    <!--  -->
+
+
+
+</head>
+<body>
+    <input type="email" placeholder="email" id="input-email">
+    <button id="signin">Sign In</button>
+
+    <!-- <div id="firebaseui-auth-container">
+
+    </div> -->
+
+    <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-auth-compat.js"></script>
+    
+
+    <script type="module">
+
+        
+
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+        import { getAuth, sendSignInLinkToEmail } from 'https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js';
+
+        
+
+        // import { initializeApp } from "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
+        // import { getAuth, sendSignInLinkToEmail } from 'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js';
+        
+      
+        // TODO: Add SDKs for Firebase products that you want to use
+
+
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+      
+        // Your web app's Firebase configuration
+      
+        const firebaseConfig = {
+      
+          apiKey: "AIzaSyCweZraLJFq_SpJnsSEUKheMu7zTZLQBxU",
+      
+          authDomain: "chat-project-58e71.firebaseapp.com",
+        //   authDomain: "localhost/chat-app-firebase/example-page.html",
+      
+          projectId: "chat-project-58e71",
+      
+          storageBucket: "chat-project-58e71.appspot.com",
+      
+          messagingSenderId: "807947212249",
+      
+          appId: "1:807947212249:web:07864d578e468c19da35c8"
+      
+        };
+
+
+        // AUTH WITH FIREBASE UI
+
+        // firebase.initializeApp(firebaseConfig);
+
+        // const ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+        // const uiConfig = {
+        //     callbacks: {
+        //         signInSuccessWithAuthResult(authResult, redirectUrl){
+        //             return true
+        //         },
+        //         uiShown(){
+        //             document.getElementById("loader").style.display = "none"
+        //         },
+        //     },
+        //     signInFlow: "popup",
+        //     signInSuccessUrl: "signedIn",
+        //     signInOptions: [
+        //         firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        //         // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        //     ]
+        // };
+
+        // ui.start("#firebaseui-auth-container", uiConfig);
+
+
+
+
+        // CUSTOM UI AUTH
+        // const firebaseApp = initializeApp(firebaseConfig);
+      
+      
+        // Initialize Firebase
+      
+        const app = initializeApp(firebaseConfig);
+
+        const actionCodeSettings = {
+            // url: 'https://www.example.com/finishSignUp?cartId=1234',
+            // url: 'https://chat-project-58e71.firebaseapp.com',
+            url: 'http://localhost/chat-app-firebase/example-page.html',
+            // this must be true
+            handleCodeInApp: true,
+            iOS: {
+                bundleId: 'com.example.ios'
+            },
+            android: {
+                packageName: 'com.example.android',
+                installApp: true,
+                minimumVersion: '12'
+            },
+            dynamicLinkDomain: 'prihanto.page.link'
+        };
+
+        const sendLinkToEmail = () => {
+            const email = document.getElementById("input-email").value;
+
+            const auth = getAuth();
+            sendSignInLinkToEmail(auth, email, actionCodeSettings)
+                .then(() => {
+                    // The link was successfully sent. Inform the user.
+                    // Save the email locally so you don't need to ask the user for it again
+                    // if they open the link on the same device
+
+                    window.localStorage.setItem("emailForSignIn", email);
+                    console.log("link successfully sent");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode);
+                    console.log(errorMessage);
+            });
+        }
+
+
+        document.addEventListener("click", function(event){
+            const btn_clicked = event.target;
+            if(btn_clicked.id == "signin"){
+                sendLinkToEmail();
+            }
+        });
+
+
+
+      
+    </script>
+
+    <script>
+        document.getElementsByClassName("firebaseui-title")[0].innerHTML = "Masuk dengan Email";
+    </script>
+
+    <!-- <script src="./auth.js"></script> -->
+</body>
+</html>

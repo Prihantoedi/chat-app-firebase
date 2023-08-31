@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Page</title>
+    <script src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app-compat.js"></script>
+</head>
+<body>
+    <h3>Register</h3>
+    <div>
+        <input type="text" id="input-user-username-register" placeholder="username">
+        <input type="email" id="input-user-email-register" placeholder="email">
+        <input type="password" id="input-user-password-register" placeholder="password">
+        <button id="btn-register">Register</button>
+    </div>
+    
+    <h3>Sign In</h3>
+    <div>
+        <input type="email" id="input-user-email-signin" placeholder="email">
+        <input type="password" id="input-user-password-signin" placholder="password">
+        <button id="btn-signin">Sign In</button>
+    </div>
+
+    <div>
+        <button id="btn-signout">Sign Out</button>
+    </div>
+
+    <script type="module">
+         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js';
+
+         const firebaseConfig = {
+      
+            apiKey: "AIzaSyCweZraLJFq_SpJnsSEUKheMu7zTZLQBxU",
+        
+            authDomain: "chat-project-58e71.firebaseapp.com",
+        
+            projectId: "chat-project-58e71",
+        
+            storageBucket: "chat-project-58e71.appspot.com",
+        
+            messagingSenderId: "807947212249",
+        
+            appId: "1:807947212249:web:07864d578e468c19da35c8"
+        
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Initialize Firebase Authentication and get a reference to the service
+
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if(user){
+                console.log(user.accessToken);
+                console.log(user.displayName);
+            } else{
+                console.log("user is signed out");
+            }
+        })
+
+        document.addEventListener("click", function(event){
+            const btn_clicked = event.target;
+
+            if(btn_clicked.id === "btn-register"){
+                const username = document.getElementById("input-user-username-register").value;
+                console.log(username);
+                const email = document.getElementById("input-user-email-register").value;
+                const password = document.getElementById("input-user-password-register").value;
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        console.log(user);
+                        updateProfile(auth.currentUser, {
+                            displayName: username
+                        }).then(() => {
+                            console.log("Display name added to the user");
+                        }).catch((error) => {
+                            console.error("Error updating display name: ", error);
+                        });
+
+                        signOut(auth).then(() => {
+                            console.log("user signed out from register");
+                        }).catch((error) => {
+                            const errorCode = error.code;
+                            const errorMessage = error.message;
+                            console.log(errorCode);
+                            console.log(errorMessage);
+                        });
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log(errorCode);
+                        console.log(errorMessage);
+                    });
+            }
+
+            if(btn_clicked.id === "btn-signin"){
+                const email = document.getElementById("input-user-email-signin").value;
+                const password = document.getElementById("input-user-password-signin").value;
+
+                signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log(user);
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode);
+                    console.log(errorMessage);
+                });
+
+            }
+
+            if(btn_clicked.id === "btn-signout"){
+                signOut(auth).then(() => {
+                    
+                }).catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode);
+                    console.log(errorMessage);
+                });
+            }
+        });
+
+    </script>
+    
+</body>
+</html>
